@@ -2,7 +2,7 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["DEIN_TEAM_ID.com.martin.wishlistFirebase"],
+        "appIDs": ["9CQUMUHB42.com.martin.wishlistFirebase"],
         "components": [
           { "/": "/wishlist/user/*" },
           { "/": "/wishlist/folder/*" }
