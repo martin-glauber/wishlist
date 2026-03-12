@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opening Wishlist…</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0f0f0f;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      color: #fff;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 72px;
+      margin-bottom: 24px;
+      animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+      max-width: 280px;
+      margin-bottom: 36px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      color: #000;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 16px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+      margin-bottom: 16px;
+    }
+    .btn:active { opacity: 0.75; }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .status {
+      font-size: 13px;
+      color: rgba(255,255,255,0.3);
+      margin-top: 32px;
+    }
+  </style>
+</head>
+<body>
+  <div class="icon">🎁</div>
+  <h1 id="title">Opening profile…</h1>
+  <p id="subtitle">Tap the button below to open this profile in the Wishlist app.</p>
+
+  <a id="openBtn" class="btn" href="#">Open in Wishlist</a>
+  <br>
+  <a id="storeBtn" class="btn btn-secondary" href="#" style="display:none">Download Wishlist</a>
+
+  <p class="status" id="status"></p>
+
+  <script>
+    // Extract username from path: /user/martinglauber → martinglauber
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    // parts = ["wishlist", "user", "martinglauber"]  (on GitHub Pages)
+    // Find the segment after "user"
+    const userIdx = parts.indexOf('user');
+    const username = userIdx !== -1 && parts[userIdx + 1] ? parts[userIdx + 1] : null;
+
+    const deepLink = username ? `wishlist://user/${username}` : 'wishlist://';
+    const appStoreURL = 'https://apps.apple.com/app/id0000000000'; // 🔧 Replace with real App Store ID
+
+    document.getElementById('title').textContent = username
+      ? `@${username} on Wishlist`
+      : 'Open in Wishlist';
+
+    document.getElementById('subtitle').textContent = username
+      ? `Tap below to view @${username}'s profile in the Wishlist app.`
+      : 'Tap below to open the Wishlist app.';
+
+    const openBtn = document.getElementById('openBtn');
+    const storeBtn = document.getElementById('storeBtn');
+    const status = document.getElementById('status');
+
+    openBtn.href = deepLink;
+
+    openBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      status.textContent = 'Opening Wishlist…';
+
+      // Try to open the app
+      window.location.href = deepLink;
+
+      // After 2s, if still here → app probably not installed
+      setTimeout(() => {
+        status.textContent = "Couldn't open the app. Don't have Wishlist yet?";
+        storeBtn.style.display = 'inline-flex';
+        storeBtn.href = appStoreURL;
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
